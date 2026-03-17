@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.GatewayDTO;
 import co.reales.dw.services.GatewayService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/gateways")
 public class GatewayController {
 
-    @Autowired
-    private GatewayService gatewayService;
+    private final GatewayService gatewayService;
+
+    public GatewayController(GatewayService gatewayService) {
+        this.gatewayService = gatewayService;
+    }
 
     @GetMapping("/proceso/{procesoId}")
     public ResponseEntity<List<GatewayDTO>> listar(@PathVariable Long procesoId) {

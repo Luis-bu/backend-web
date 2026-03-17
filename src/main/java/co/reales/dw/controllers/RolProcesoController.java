@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.RolProcesoDTO;
 import co.reales.dw.services.RolProcesoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/roles")
 public class RolProcesoController {
 
-    @Autowired
-    private RolProcesoService rolProcesoService;
+    private final RolProcesoService rolProcesoService;
+
+    public RolProcesoController(RolProcesoService rolProcesoService) {
+        this.rolProcesoService = rolProcesoService;
+    }
 
     @GetMapping("/empresa/{empresaId}")
     public ResponseEntity<List<RolProcesoDTO>> listar(@PathVariable Long empresaId) {

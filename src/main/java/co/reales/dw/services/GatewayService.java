@@ -6,28 +6,27 @@ import co.reales.dw.entities.Proceso;
 import co.reales.dw.repositories.GatewayRepository;
 import co.reales.dw.repositories.ProcesoRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GatewayService {
 
-    @Autowired
-    private GatewayRepository gatewayRepository;
+    private final GatewayRepository gatewayRepository;
+    private final ProcesoRepository procesoRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ProcesoRepository procesoRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public GatewayService(GatewayRepository gatewayRepository, ProcesoRepository procesoRepository, ModelMapper modelMapper) {
+        this.gatewayRepository = gatewayRepository;
+        this.procesoRepository = procesoRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<GatewayDTO> listarPorProceso(Long procesoId) {
         return gatewayRepository.findByProcesoId(procesoId)
                 .stream()
                 .map(g -> modelMapper.map(g, GatewayDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public GatewayDTO obtenerGateway(Long id) {

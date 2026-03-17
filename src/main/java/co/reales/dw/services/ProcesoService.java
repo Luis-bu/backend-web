@@ -6,33 +6,34 @@ import co.reales.dw.entities.Proceso;
 import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.ProcesoRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProcesoService {
 
-    @Autowired
-    private ProcesoRepository procesoRepository;
+    private static final String PROCESO_NO_ENCONTRADO = "Proceso no encontrado";
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
+    private final ProcesoRepository procesoRepository;
+    private final EmpresaRepository empresaRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    public ProcesoService(ProcesoRepository procesoRepository, EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+        this.procesoRepository = procesoRepository;
+        this.empresaRepository = empresaRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<ProcesoDTO> listarProcesosPorEmpresa(Long empresaId) {
         return procesoRepository.findByEmpresaId(empresaId)
                 .stream()
                 .map(p -> modelMapper.map(p, ProcesoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ProcesoDTO obtenerProceso(Long id) {
         Proceso proceso = procesoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proceso no encontrado"));
+                .orElseThrow(() -> new RuntimeException(PROCESO_NO_ENCONTRADO));
         return modelMapper.map(proceso, ProcesoDTO.class);
     }
 
@@ -47,7 +48,7 @@ public class ProcesoService {
 
     public ProcesoDTO actualizarProceso(Long id, ProcesoDTO dto) {
         Proceso proceso = procesoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proceso no encontrado"));
+                .orElseThrow(() -> new RuntimeException(PROCESO_NO_ENCONTRADO));
         proceso.setNombre(dto.getNombre());
         proceso.setDescripcion(dto.getDescripcion());
         proceso.setCategoria(dto.getCategoria());
@@ -57,7 +58,7 @@ public class ProcesoService {
 
     public void eliminarProceso(Long id) {
         Proceso proceso = procesoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Proceso no encontrado"));
+                .orElseThrow(() -> new RuntimeException(PROCESO_NO_ENCONTRADO));
         proceso.setActivo(false);
         procesoRepository.save(proceso);
     }

@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.EmpresaDTO;
 import co.reales.dw.services.EmpresaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/empresas")
 public class EmpresaController {
 
-    @Autowired
-    private EmpresaService empresaService;
+    private final EmpresaService empresaService;
+
+    public EmpresaController(EmpresaService empresaService) {
+        this.empresaService = empresaService;
+    }
 
     @GetMapping
     public ResponseEntity<List<EmpresaDTO>> listar() {

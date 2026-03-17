@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.ArcoDTO;
 import co.reales.dw.services.ArcoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/arcos")
 public class ArcoController {
 
-    @Autowired
-    private ArcoService arcoService;
+    private final ArcoService arcoService;
+
+    public ArcoController(ArcoService arcoService) {
+        this.arcoService = arcoService;
+    }
 
     @GetMapping("/proceso/{procesoId}")
     public ResponseEntity<List<ArcoDTO>> listar(@PathVariable Long procesoId) {

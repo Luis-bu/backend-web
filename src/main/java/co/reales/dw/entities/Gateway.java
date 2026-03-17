@@ -2,7 +2,7 @@ package co.reales.dw.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
+
 
 @Data
 @Entity

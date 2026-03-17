@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.UsuarioDTO;
 import co.reales.dw.services.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping("/empresa/{empresaId}")
     public ResponseEntity<List<UsuarioDTO>> listar(@PathVariable Long empresaId) {

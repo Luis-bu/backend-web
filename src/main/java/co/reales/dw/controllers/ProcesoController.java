@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.ProcesoDTO;
 import co.reales.dw.services.ProcesoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/procesos")
 public class ProcesoController {
 
-    @Autowired
-    private ProcesoService procesoService;
+    private final ProcesoService procesoService;
+
+    public ProcesoController(ProcesoService procesoService) {
+        this.procesoService = procesoService;
+    }
 
     @GetMapping("/empresa/{empresaId}")
     public ResponseEntity<List<ProcesoDTO>> listar(@PathVariable Long empresaId) {

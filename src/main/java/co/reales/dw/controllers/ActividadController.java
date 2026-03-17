@@ -2,7 +2,6 @@ package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.ActividadDTO;
 import co.reales.dw.services.ActividadService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @RequestMapping("/api/actividades")
 public class ActividadController {
 
-    @Autowired
-    private ActividadService actividadService;
+    private final ActividadService actividadService;
+
+    public ActividadController(ActividadService actividadService) {
+        this.actividadService = actividadService;
+    }
 
     @GetMapping("/proceso/{procesoId}")
     public ResponseEntity<List<ActividadDTO>> listar(@PathVariable Long procesoId) {

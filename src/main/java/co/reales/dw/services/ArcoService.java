@@ -8,34 +8,31 @@ import co.reales.dw.repositories.ArcoRepository;
 import co.reales.dw.repositories.GatewayRepository;
 import co.reales.dw.repositories.ProcesoRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ArcoService {
 
-    @Autowired
-    private ArcoRepository arcoRepository;
+    private final ArcoRepository arcoRepository;
+    private final ProcesoRepository procesoRepository;
+    private final ActividadRepository actividadRepository;
+    private final GatewayRepository gatewayRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ProcesoRepository procesoRepository;
-
-    @Autowired
-    private ActividadRepository actividadRepository;
-
-    @Autowired
-    private GatewayRepository gatewayRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public ArcoService(ArcoRepository arcoRepository, ProcesoRepository procesoRepository, ActividadRepository actividadRepository, GatewayRepository gatewayRepository, ModelMapper modelMapper) {
+        this.arcoRepository = arcoRepository;
+        this.procesoRepository = procesoRepository;
+        this.actividadRepository = actividadRepository;
+        this.gatewayRepository = gatewayRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<ArcoDTO> listarPorProceso(Long procesoId) {
         return arcoRepository.findByProcesoId(procesoId)
                 .stream()
                 .map(a -> modelMapper.map(a, ArcoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ArcoDTO obtenerArco(Long id) {

@@ -4,25 +4,25 @@ import co.reales.dw.dtos.EmpresaDTO;
 import co.reales.dw.entities.Empresa;
 import co.reales.dw.repositories.EmpresaRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EmpresaService {
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
+    private final EmpresaRepository empresaRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    public EmpresaService(EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+        this.empresaRepository = empresaRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<EmpresaDTO> listarEmpresas() {
         return empresaRepository.findAll()
                 .stream()
                 .map(e -> modelMapper.map(e, EmpresaDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public EmpresaDTO obtenerEmpresa(Long id) {

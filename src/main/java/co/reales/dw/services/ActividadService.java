@@ -8,31 +8,29 @@ import co.reales.dw.repositories.ActividadRepository;
 import co.reales.dw.repositories.ProcesoRepository;
 import co.reales.dw.repositories.RolProcesoRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ActividadService {
 
-    @Autowired
-    private ActividadRepository actividadRepository;
+    private final ActividadRepository actividadRepository;
+    private final ProcesoRepository procesoRepository;
+    private final RolProcesoRepository rolProcesoRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ProcesoRepository procesoRepository;
-
-    @Autowired
-    private RolProcesoRepository rolProcesoRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public ActividadService(ActividadRepository actividadRepository, ProcesoRepository procesoRepository, RolProcesoRepository rolProcesoRepository, ModelMapper modelMapper) {
+        this.actividadRepository = actividadRepository;
+        this.procesoRepository = procesoRepository;
+        this.rolProcesoRepository = rolProcesoRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<ActividadDTO> listarPorProceso(Long procesoId) {
         return actividadRepository.findByProcesoId(procesoId)
                 .stream()
                 .map(a -> modelMapper.map(a, ActividadDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ActividadDTO obtenerActividad(Long id) {

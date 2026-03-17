@@ -6,28 +6,27 @@ import co.reales.dw.entities.Usuario;
 import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.UsuarioRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final EmpresaRepository empresaRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public UsuarioService(UsuarioRepository usuarioRepository, EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+        this.usuarioRepository = usuarioRepository;
+        this.empresaRepository = empresaRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<UsuarioDTO> listarUsuariosPorEmpresa(Long empresaId) {
         return usuarioRepository.findByEmpresaId(empresaId)
                 .stream()
                 .map(u -> modelMapper.map(u, UsuarioDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public UsuarioDTO obtenerUsuario(Long id) {

@@ -3,31 +3,31 @@ package co.reales.dw.services;
 import co.reales.dw.dtos.RolProcesoDTO;
 import co.reales.dw.entities.Empresa;
 import co.reales.dw.entities.RolProceso;
+import co.reales.dw.exceptions.BadRequestException;
 import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.RolProcesoRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RolProcesoService {
 
-    @Autowired
-    private RolProcesoRepository rolProcesoRepository;
+    private final RolProcesoRepository rolProcesoRepository;
+    private final EmpresaRepository empresaRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public RolProcesoService(RolProcesoRepository rolProcesoRepository, EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+        this.rolProcesoRepository = rolProcesoRepository;
+        this.empresaRepository = empresaRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<RolProcesoDTO> listarPorEmpresa(Long empresaId) {
         return rolProcesoRepository.findByEmpresaId(empresaId)
                 .stream()
                 .map(r -> modelMapper.map(r, RolProcesoDTO.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public RolProcesoDTO obtenerRol(Long id) {
@@ -54,7 +54,7 @@ public class RolProcesoService {
 
     public void eliminarRol(Long id) {
         if (rolProcesoRepository.existsByIdAndActividadesIsNotEmpty(id))
-            throw new RuntimeException("No se puede eliminar un rol asignado a actividades");
+            throw new BadRequestException("No se puede eliminar un rol asignado a actividades");
         rolProcesoRepository.deleteById(id);
     }
 }
