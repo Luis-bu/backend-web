@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-web
+  namespace: grupo24
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-web
+  template:
+    metadata:
+      labels:
+        app: backend-web
+    spec:
+      containers:
+      - name: backend-web
+        image: ghcr.io/luis-bu/backend-web:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://190.146.2.119:2345/grupo24
+        - name: SPRING_DATASOURCE_USERNAME
+          value: grupo24_user
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: G24@Qw8#Lm2!Rt7$Px9V
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-web
+  namespace: grupo24
+spec:
+  selector:
+    app: backend-web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
