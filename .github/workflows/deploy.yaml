@@ -23,11 +23,13 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build Docker image
-      run: docker build -t ghcr.io/${OWNER_LC}/<backend-web>:latest .
+      run: docker build -t ghcr.io/${OWNER_LC}/backend-web:latest .
+
     - name: Push Docker image
-      run: docker push ghcr.io/${OWNER_LC}/<backend-web>:latest
+      run: docker push ghcr.io/${OWNER_LC}/backend-web:latest
+
     - name: Print pushed image URL
-      run: 'echo "Imagen publicada: ghcr.io/${OWNER_LC}/<backend-web:>latest"'
+      run: 'echo "Imagen publicada: ghcr.io/${OWNER_LC}/backend-web:latest"'
   deploy-onpremise:
     name: Deploy on MicroK8s On-Premise
     runs-on: main
