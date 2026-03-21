@@ -18,26 +18,27 @@ jobs:
       run: "echo 'Rama actual: ${{ github.ref }}'"
 
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set OWNER_LC
       run: echo "OWNER_LC=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
     - name: Log in to GHCR
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
+
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build Docker image
-      run: docker build -t ghcr.io/${OWNER_LC}/<backend-web>:latest .
+      run: docker build -t ghcr.io/${OWNER_LC}/backend-web:latest .
 
     - name: Push Docker image
-      run: docker push ghcr.io/${OWNER_LC}/<backend-web>:latest
+      run: docker push ghcr.io/${OWNER_LC}/backend-web:latest
 
     - name: Print pushed image URL
-      run: 'echo "Imagen publicada: ghcr.io/${OWNER_LC}/<backend-web>:latest"'
+      run: 'echo "Imagen publicada: ghcr.io/${OWNER_LC}/backend-web:latest"'
 
   deploy-onpremise:
     name: Deploy on MicroK8s On-Premise
@@ -46,8 +47,8 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Apply Kubernetes deployment
       run: sudo microk8s kubectl apply -f k8s/deployment.yaml
     - name: Restart Kubernetes deployment
-      run: sudo microk8s kubectl rollout restart deployment/<nombredeplyment> -n <nombrenamespace>
+      run: sudo microk8s kubectl rollout restart deployment/backend-web -n grupo24
