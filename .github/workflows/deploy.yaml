@@ -32,6 +32,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build Docker image
+<<<<<<< HEAD
       run: docker build -t ghcr.io/${OWNER_LC}/backend-web:latest .
 
     - name: Push Docker image
@@ -39,6 +40,15 @@ jobs:
 
     - name: Print pushed image URL
       run: 'echo "Imagen publicada: ghcr.io/${OWNER_LC}/backend-web:latest"'
+=======
+      run: docker build -t ghcr.io/${{ env.OWNER_LC }}/backend-web:latest .
+
+    - name: Push Docker image
+      run: docker push ghcr.io/${{ env.OWNER_LC }}/backend-web:latest
+
+    - name: Print pushed image URL
+      run: echo "Imagen publicada: ghcr.io/${{ env.OWNER_LC }}/backend-web:latest"
+>>>>>>> main
 
   deploy-onpremise:
     name: Deploy on MicroK8s On-Premise
