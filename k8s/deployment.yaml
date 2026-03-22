@@ -4,7 +4,7 @@ metadata:
   name: backend-web
   namespace: grupo24
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend-web
@@ -13,18 +13,13 @@ spec:
       labels:
         app: backend-web
     spec:
+      imagePullSecrets:
+      - name: ghcr-secret
       containers:
       - name: backend-web
         image: ghcr.io/luis-bu/backend-web:latest
         ports:
         - containerPort: 8080
-        env:
-        - name: SPRING_DATASOURCE_URL
-          value: jdbc:postgresql://190.146.2.119:2345/grupo24
-        - name: SPRING_DATASOURCE_USERNAME
-          value: grupo24_user
-        - name: SPRING_DATASOURCE_PASSWORD
-          value: G24@Qw8#Lm2!Rt7$Px9V
 ---
 apiVersion: v1
 kind: Service
@@ -35,7 +30,25 @@ spec:
   selector:
     app: backend-web
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8080
-  type: ClusterIP
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-web
+  namespace: grupo24
+spec:
+  ingressClassName: public
+  rules:
+  - host: grupo24.inphotech.co
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-web
+            port:
+              number: 8080
