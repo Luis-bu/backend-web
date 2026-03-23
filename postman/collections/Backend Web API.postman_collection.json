@@ -1,0 +1,862 @@
+{
+  "info": {
+    "_postman_id": "a97a07ee-d123-42d7-aa11-c11faf35e123",
+    "name": "Backend Web API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53253145",
+    "_collection_link": "https://go.postman.co/collection/53253145-a97a07ee-d123-42d7-aa11-c11faf35e123?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar empresas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/empresas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "empresas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear empresa",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Mi Empresa\",\r\n  \"nit\": \"900123456\",\r\n  \"correoContacto\": \"contacto@miempresa.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/empresas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "empresas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener empresa por id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/empresas/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "empresas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar empresa",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nombre\": \"Mi Empresa Actualizada\",\r\n    \"nit\": \"900123456\",\r\n    \"correoContacto\": \"nuevo@miempresa.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/empresas/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "empresas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar empresa",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/empresas/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "empresas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Listar roles por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/roles/empresa/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "roles",
+                "empresa",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear rol",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 or 201\", function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const statusCode = pm.response.code;",
+                  "",
+                  "if (statusCode === 200 || statusCode === 201) {",
+                  "    pm.test(\"Response body is a JSON object with an 'id' property\", function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.be.an(\"object\");",
+                  "        pm.expect(jsonData).to.have.property(\"id\");",
+                  "    });",
+                  "} else if (statusCode === 400) {",
+                  "    console.log(\"Bad request - check the request body fields: nombre, descripcion, empresaId.\");",
+                  "} else if (statusCode === 404) {",
+                  "    console.log(\"Not found - check that the endpoint /api/roles exists and the empresaId is valid.\");",
+                  "} else if (statusCode === 500) {",
+                  "    console.log(\"Server error - the backend may have a bug or the empresaId may not exist in the database.\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Analista\",\r\n  \"descripcion\": \"Rol encargado del análisis\",\r\n  \"empresaId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/roles",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar rol",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Analista Senior\",\r\n  \"descripcion\": \"Rol actualizado\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/roles/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "roles",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar rol",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/roles/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "roles",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Procesos",
+      "item": [
+        {
+          "name": "Listar procesos por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/procesos/empresa/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "procesos",
+                "empresa",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear proceso",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Proceso de Compras\",\r\n  \"descripcion\": \"Proceso para gestionar compras\",\r\n  \"categoria\": \"OPERATIVO\",\r\n  \"estado\": \"BORRADOR\",\r\n  \"empresaId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/procesos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "procesos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar proceso",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Proceso de Compras Actualizado\",\r\n  \"descripcion\": \"Proceso actualizado\",\r\n  \"categoria\": \"OPERATIVO\",\r\n  \"estado\": \"PUBLICADO\",\r\n  \"empresaId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/procesos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "procesos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Borrar proceso",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/procesos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "procesos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Actividades",
+      "item": [
+        {
+          "name": "Listar actividades por proceso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/actividades/proceso/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "actividades",
+                "proceso",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear actividad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Revisar solicitud\",\r\n  \"tipo\": \"TAREA\",\r\n  \"descripcion\": \"Actividad inicial del proceso\",\r\n  \"procesoId\": 1,\r\n  \"rolProcesoId\": 2\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/actividades",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "actividades"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar actividad",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Revisar solicitud actualizada\",\r\n  \"tipo\": \"TAREA\",\r\n  \"descripcion\": \"Actividad modificada\",\r\n  \"procesoId\": 1,\r\n  \"rolProcesoId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/actividades/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "actividades",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar actividad",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/actividades/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "actividades",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Gateways",
+      "item": [
+        {
+          "name": "Listar gateways por proceso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/gateways/proceso/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "gateways",
+                "proceso",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear gateway",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"tipo\": \"EXCLUSIVO\",\r\n  \"procesoId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/gateways",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "gateways"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar gateway",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"tipo\": \"PARALELO\",\r\n  \"procesoId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/gateways/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "gateways",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar gateway",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/gateways/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "gateways",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Arcos",
+      "item": [
+        {
+          "name": "Listar arcos por proceso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/arcos/proceso/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "arcos",
+                "proceso",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear arco entre actividades",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"etiqueta\": \"Flujo A\",\r\n  \"procesoId\": 1,\r\n  \"actividadOrigenId\": 1,\r\n  \"actividadDestinoId\": 2,\r\n  \"gatewayOrigenId\": null,\r\n  \"gatewayDestinoId\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/arcos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "arcos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear arco actividad → gateway",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"etiqueta\": \"Hacia decisión\",\r\n  \"procesoId\": 1,\r\n  \"actividadOrigenId\": 1,\r\n  \"actividadDestinoId\": null,\r\n  \"gatewayOrigenId\": null,\r\n  \"gatewayDestinoId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/arcos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "arcos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar arco",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"etiqueta\": \"Flujo A actualizado\",\r\n  \"procesoId\": 1,\r\n  \"actividadOrigenId\": 1,\r\n  \"actividadDestinoId\": 2,\r\n  \"gatewayOrigenId\": null,\r\n  \"gatewayDestinoId\": null\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/arcos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "arcos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar arco",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/arcos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "arcos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios por empresa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/usuarios/empresa/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "usuarios",
+                "empresa",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Juan Pérez\",\r\n  \"correo\": \"juan@empresa.com\",\r\n  \"contrasena\": \"123456\",\r\n  \"rol\": \"ADMINISTRADOR\",\r\n  \"empresaId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/usuarios",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "usuarios"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Juan Pérez Actualizado\",\r\n  \"correo\": \"juan.actualizado@empresa.com\",\r\n  \"rol\": \"EDITOR\",\r\n  \"empresaId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/usuarios/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "usuarios",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/usuarios/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "usuarios",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
