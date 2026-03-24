@@ -13,13 +13,14 @@ spec:
       labels:
         app: backend-web
     spec:
-      imagePullSecrets:
-      - name: ghcr-secret
       containers:
       - name: backend-web
         image: ghcr.io/luis-bu/backend-web:latest
         ports:
         - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: backend-web-config
 ---
 apiVersion: v1
 kind: Service
