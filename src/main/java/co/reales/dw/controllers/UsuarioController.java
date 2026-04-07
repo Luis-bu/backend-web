@@ -1,6 +1,7 @@
 package co.reales.dw.controllers;
 
 import co.reales.dw.dtos.UsuarioDTO;
+import co.reales.dw.dtos.UsuarioRequestDTO;
 import co.reales.dw.services.UsuarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> crear(@RequestBody UsuarioDTO dto) {
+    public ResponseEntity<UsuarioDTO> crear(@RequestBody UsuarioRequestDTO dto) {
         return ResponseEntity.ok(usuarioService.crearUsuario(dto));
     }
 

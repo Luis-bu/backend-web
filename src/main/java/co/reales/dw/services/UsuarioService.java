@@ -1,11 +1,12 @@
 package co.reales.dw.services;
 
 import co.reales.dw.dtos.UsuarioDTO;
+import co.reales.dw.dtos.UsuarioRequestDTO;
 import co.reales.dw.entities.Empresa;
 import co.reales.dw.entities.Usuario;
-import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.UsuarioRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -13,12 +14,13 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final EmpresaRepository empresaRepository;
+    private final EmpresaService empresaService;
     private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UsuarioService(UsuarioRepository usuarioRepository, EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+    public UsuarioService(UsuarioRepository usuarioRepository, EmpresaService empresaService, ModelMapper modelMapper) {
         this.usuarioRepository = usuarioRepository;
-        this.empresaRepository = empresaRepository;
+        this.empresaService = empresaService;
         this.modelMapper = modelMapper;
     }
 
@@ -35,10 +37,14 @@ public class UsuarioService {
         return modelMapper.map(usuario, UsuarioDTO.class);
     }
 
-    public UsuarioDTO crearUsuario(UsuarioDTO dto) {
-        Empresa empresa = empresaRepository.findById(dto.getEmpresaId())
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
-        Usuario usuario = modelMapper.map(dto, Usuario.class);
+    public UsuarioDTO crearUsuario(UsuarioRequestDTO dto) {
+        Empresa empresa = modelMapper.map(
+            empresaService.obtenerEmpresa(dto.getEmpresaId()), Empresa.class);
+        Usuario usuario = new Usuario();
+        usuario.setNombre(dto.getNombre());
+        usuario.setCorreo(dto.getCorreo());
+        usuario.setContrasena(passwordEncoder.encode(dto.getContrasena()));
+        usuario.setRol(Usuario.RolUsuario.valueOf(dto.getRol()));
         usuario.setEmpresa(empresa);
         return modelMapper.map(usuarioRepository.save(usuario), UsuarioDTO.class);
     }

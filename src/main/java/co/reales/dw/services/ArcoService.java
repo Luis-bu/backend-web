@@ -1,12 +1,11 @@
 package co.reales.dw.services;
 
 import co.reales.dw.dtos.ArcoDTO;
+import co.reales.dw.entities.Actividad;
 import co.reales.dw.entities.Arco;
+import co.reales.dw.entities.Gateway;
 import co.reales.dw.entities.Proceso;
-import co.reales.dw.repositories.ActividadRepository;
 import co.reales.dw.repositories.ArcoRepository;
-import co.reales.dw.repositories.GatewayRepository;
-import co.reales.dw.repositories.ProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -15,16 +14,16 @@ import java.util.List;
 public class ArcoService {
 
     private final ArcoRepository arcoRepository;
-    private final ProcesoRepository procesoRepository;
-    private final ActividadRepository actividadRepository;
-    private final GatewayRepository gatewayRepository;
+    private final ProcesoService procesoService;
+    private final ActividadService actividadService;
+    private final GatewayService gatewayService;
     private final ModelMapper modelMapper;
 
-    public ArcoService(ArcoRepository arcoRepository, ProcesoRepository procesoRepository, ActividadRepository actividadRepository, GatewayRepository gatewayRepository, ModelMapper modelMapper) {
+    public ArcoService(ArcoRepository arcoRepository, ProcesoService procesoService, ActividadService actividadService, GatewayService gatewayService, ModelMapper modelMapper) {
         this.arcoRepository = arcoRepository;
-        this.procesoRepository = procesoRepository;
-        this.actividadRepository = actividadRepository;
-        this.gatewayRepository = gatewayRepository;
+        this.procesoService = procesoService;
+        this.actividadService = actividadService;
+        this.gatewayService = gatewayService;
         this.modelMapper = modelMapper;
     }
 
@@ -42,18 +41,23 @@ public class ArcoService {
     }
 
     public ArcoDTO crearArco(ArcoDTO dto) {
-        Proceso proceso = procesoRepository.findById(dto.getProcesoId())
-                .orElseThrow(() -> new RuntimeException("Proceso no encontrado"));
-        Arco arco = modelMapper.map(dto, Arco.class);
+        Proceso proceso = modelMapper.map(
+            procesoService.obtenerProceso(dto.getProcesoId()), Proceso.class);
+        Arco arco = new Arco();
+        arco.setEtiqueta(dto.getEtiqueta());
         arco.setProceso(proceso);
         if (dto.getActividadOrigenId() != null)
-            arco.setActividadOrigen(actividadRepository.findById(dto.getActividadOrigenId()).orElse(null));
+            arco.setActividadOrigen(modelMapper.map(
+                actividadService.obtenerActividad(dto.getActividadOrigenId()), Actividad.class));
         if (dto.getActividadDestinoId() != null)
-            arco.setActividadDestino(actividadRepository.findById(dto.getActividadDestinoId()).orElse(null));
+            arco.setActividadDestino(modelMapper.map(
+                actividadService.obtenerActividad(dto.getActividadDestinoId()), Actividad.class));
         if (dto.getGatewayOrigenId() != null)
-            arco.setGatewayOrigen(gatewayRepository.findById(dto.getGatewayOrigenId()).orElse(null));
+            arco.setGatewayOrigen(modelMapper.map(
+                gatewayService.obtenerGateway(dto.getGatewayOrigenId()), Gateway.class));
         if (dto.getGatewayDestinoId() != null)
-            arco.setGatewayDestino(gatewayRepository.findById(dto.getGatewayDestinoId()).orElse(null));
+            arco.setGatewayDestino(modelMapper.map(
+                gatewayService.obtenerGateway(dto.getGatewayDestinoId()), Gateway.class));
         return modelMapper.map(arcoRepository.save(arco), ArcoDTO.class);
     }
 
