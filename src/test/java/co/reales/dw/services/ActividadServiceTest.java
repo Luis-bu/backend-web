@@ -2,7 +2,6 @@ package co.reales.dw.services;
 
 import co.reales.dw.dtos.ActividadDTO;
 import co.reales.dw.dtos.ProcesoDTO;
-import co.reales.dw.dtos.RolProcesoDTO;
 import co.reales.dw.entities.Actividad;
 import co.reales.dw.repositories.ActividadRepository;
 import org.junit.jupiter.api.Test;

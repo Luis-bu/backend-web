@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,14 +87,14 @@ class ProcesoServiceTest {
     }
 
     @Test
-    void crearProceso_empresaNoExiste() {
-        ProcesoDTO dto = new ProcesoDTO();
-        dto.setEmpresaId(1L);
+void crearProceso_empresaNoExiste() {
+    ProcesoDTO dto = new ProcesoDTO();
+    dto.setEmpresaId(1L);
 
-        when(empresaService.obtenerEmpresa(1L)).thenThrow(new RuntimeException("Empresa no encontrada"));
+    when(empresaService.obtenerEmpresa(1L)).thenThrow(new RuntimeException("Empresa no encontrada"));
 
-        assertThrows(RuntimeException.class, () -> procesoService.crearProceso(dto));
-    }
+    assertThrows(RuntimeException.class, () -> procesoService.crearProceso(dto));
+}
 
     @Test
     void actualizarProceso_ok() {
