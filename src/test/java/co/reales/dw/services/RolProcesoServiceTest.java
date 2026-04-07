@@ -113,11 +113,11 @@ void crearRol_empresaNotFound() {
     }
 
     @Test
-    void actualizarRol_notFound() {
-        when(rolProcesoRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> rolProcesoService.actualizarRol(1L, new RolProcesoDTO()));
-    }
+void actualizarRol_notFound() {
+    when(rolProcesoRepository.findById(1L)).thenReturn(Optional.empty());
+    RolProcesoDTO dto = new RolProcesoDTO();
+    assertThrows(RuntimeException.class, () -> rolProcesoService.actualizarRol(1L, dto));
+}
 
     @Test
     void eliminarRol_ok() {

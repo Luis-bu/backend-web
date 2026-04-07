@@ -112,11 +112,11 @@ void crearGateway_procesoNotFound() {
     }
 
     @Test
-    void actualizarGateway_notFound() {
-        when(gatewayRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> gatewayService.actualizarGateway(1L, new GatewayDTO()));
-    }
+void actualizarGateway_notFound() {
+    when(gatewayRepository.findById(1L)).thenReturn(Optional.empty());
+    GatewayDTO dto = new GatewayDTO();
+    assertThrows(RuntimeException.class, () -> gatewayService.actualizarGateway(1L, dto));
+}
 
     @Test
     void eliminarGateway_ok() {

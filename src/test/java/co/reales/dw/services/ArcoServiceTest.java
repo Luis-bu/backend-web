@@ -117,11 +117,11 @@ class ArcoServiceTest {
     }
 
     @Test
-    void actualizarArco_notFound() {
-        when(arcoRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> arcoService.actualizarArco(1L, new ArcoDTO()));
-    }
+void actualizarArco_notFound() {
+    when(arcoRepository.findById(1L)).thenReturn(Optional.empty());
+    ArcoDTO dto = new ArcoDTO();
+    assertThrows(RuntimeException.class, () -> arcoService.actualizarArco(1L, dto));
+}
 
     @Test
     void eliminarArco_ok() {

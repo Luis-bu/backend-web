@@ -118,11 +118,11 @@ void testCrearUsuario_empresaNotFound() {
     }
 
     @Test
-    void testActualizarUsuario_notFound() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> usuarioService.actualizarUsuario(1L, new UsuarioDTO()));
-    }
+void testActualizarUsuario_notFound() {
+    when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
+    UsuarioDTO dto = new UsuarioDTO();
+    assertThrows(RuntimeException.class, () -> usuarioService.actualizarUsuario(1L, dto));
+}
 
     @Test
     void testEliminarUsuario() {
