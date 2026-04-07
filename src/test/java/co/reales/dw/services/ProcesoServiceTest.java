@@ -115,11 +115,11 @@ void crearProceso_empresaNoExiste() {
     }
 
     @Test
-    void actualizarProceso_noExiste() {
-        when(procesoRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> procesoService.actualizarProceso(1L, new ProcesoDTO()));
-    }
+void actualizarProceso_noExiste() {
+    when(procesoRepository.findById(1L)).thenReturn(Optional.empty());
+    ProcesoDTO dto = new ProcesoDTO();
+    assertThrows(RuntimeException.class, () -> procesoService.actualizarProceso(1L, dto));
+}
 
     @Test
     void eliminarProceso_ok() {
