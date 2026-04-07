@@ -1,8 +1,6 @@
 package co.reales.dw.services;
 
-import co.reales.dw.dtos.ActividadDTO;
 import co.reales.dw.dtos.ArcoDTO;
-import co.reales.dw.dtos.GatewayDTO;
 import co.reales.dw.dtos.ProcesoDTO;
 import co.reales.dw.entities.Arco;
 import co.reales.dw.repositories.ArcoRepository;
@@ -17,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,13 +93,13 @@ class ArcoServiceTest {
 
     @Test
     void crearArco_procesoNotFound() {
-        ArcoDTO dto = new ArcoDTO();
-        dto.setProcesoId(1L);
+    ArcoDTO dto = new ArcoDTO();
+    dto.setProcesoId(1L);
 
-        when(procesoService.obtenerProceso(1L)).thenThrow(new RuntimeException("Proceso no encontrado"));
+    when(procesoService.obtenerProceso(1L)).thenThrow(new RuntimeException("Proceso no encontrado"));
 
-        assertThrows(RuntimeException.class, () -> arcoService.crearArco(dto));
-    }
+    assertThrows(RuntimeException.class, () -> arcoService.crearArco(dto));
+}
 
     @Test
     void actualizarArco_ok() {

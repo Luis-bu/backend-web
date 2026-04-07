@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,14 +87,14 @@ class GatewayServiceTest {
     }
 
     @Test
-    void crearGateway_procesoNotFound() {
-        GatewayDTO dto = new GatewayDTO();
-        dto.setProcesoId(1L);
+void crearGateway_procesoNotFound() {
+    GatewayDTO dto = new GatewayDTO();
+    dto.setProcesoId(1L);
 
-        when(procesoService.obtenerProceso(1L)).thenThrow(new RuntimeException("Proceso no encontrado"));
+    when(procesoService.obtenerProceso(1L)).thenThrow(new RuntimeException("Proceso no encontrado"));
 
-        assertThrows(RuntimeException.class, () -> gatewayService.crearGateway(dto));
-    }
+    assertThrows(RuntimeException.class, () -> gatewayService.crearGateway(dto));
+}
 
     @Test
     void actualizarGateway_ok() {

@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,16 +89,16 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void testCrearUsuario_empresaNotFound() {
-        UsuarioRequestDTO dto = new UsuarioRequestDTO();
-        dto.setEmpresaId(1L);
-        dto.setContrasena("pass");
-        dto.setRol("ADMINISTRADOR");
+void testCrearUsuario_empresaNotFound() {
+    UsuarioRequestDTO dto = new UsuarioRequestDTO();
+    dto.setEmpresaId(1L);
+    dto.setContrasena("pass");
+    dto.setRol("ADMINISTRADOR");
 
-        when(empresaService.obtenerEmpresa(1L)).thenThrow(new RuntimeException("Empresa no encontrada"));
+    when(empresaService.obtenerEmpresa(1L)).thenThrow(new RuntimeException("Empresa no encontrada"));
 
-        assertThrows(RuntimeException.class, () -> usuarioService.crearUsuario(dto));
-    }
+    assertThrows(RuntimeException.class, () -> usuarioService.crearUsuario(dto));
+}
 
     @Test
     void testActualizarUsuario() {
