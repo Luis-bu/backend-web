@@ -4,7 +4,6 @@ import co.reales.dw.dtos.GatewayDTO;
 import co.reales.dw.entities.Gateway;
 import co.reales.dw.entities.Proceso;
 import co.reales.dw.repositories.GatewayRepository;
-import co.reales.dw.repositories.ProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,12 +12,12 @@ import java.util.List;
 public class GatewayService {
 
     private final GatewayRepository gatewayRepository;
-    private final ProcesoRepository procesoRepository;
+    private final ProcesoService procesoService;
     private final ModelMapper modelMapper;
 
-    public GatewayService(GatewayRepository gatewayRepository, ProcesoRepository procesoRepository, ModelMapper modelMapper) {
+    public GatewayService(GatewayRepository gatewayRepository, ProcesoService procesoService, ModelMapper modelMapper) {
         this.gatewayRepository = gatewayRepository;
-        this.procesoRepository = procesoRepository;
+        this.procesoService = procesoService;
         this.modelMapper = modelMapper;
     }
 
@@ -35,12 +34,13 @@ public class GatewayService {
         return modelMapper.map(gateway, GatewayDTO.class);
     }
 
-    public GatewayDTO crearGateway(GatewayDTO dto) {
-        Proceso proceso = procesoRepository.findById(dto.getProcesoId())
-                .orElseThrow(() -> new RuntimeException("Proceso no encontrado"));
-        Gateway gateway = modelMapper.map(dto, Gateway.class);
-        gateway.setProceso(proceso);
-        return modelMapper.map(gatewayRepository.save(gateway), GatewayDTO.class);
+   public GatewayDTO crearGateway(GatewayDTO dto) {
+    Proceso proceso = modelMapper.map(
+        procesoService.obtenerProceso(dto.getProcesoId()), Proceso.class);
+    Gateway gateway = new Gateway();
+    gateway.setTipo(Gateway.TipoGateway.valueOf(dto.getTipo()));
+    gateway.setProceso(proceso);
+    return modelMapper.map(gatewayRepository.save(gateway), GatewayDTO.class);
     }
 
     public GatewayDTO actualizarGateway(Long id, GatewayDTO dto) {

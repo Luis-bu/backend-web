@@ -1,11 +1,10 @@
 package co.reales.dw.services;
 
 import co.reales.dw.dtos.ActividadDTO;
+import co.reales.dw.dtos.ProcesoDTO;
+import co.reales.dw.dtos.RolProcesoDTO;
 import co.reales.dw.entities.Actividad;
-import co.reales.dw.entities.Proceso;
 import co.reales.dw.repositories.ActividadRepository;
-import co.reales.dw.repositories.ProcesoRepository;
-import co.reales.dw.repositories.RolProcesoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -26,10 +25,10 @@ class ActividadServiceTest {
     private ActividadRepository actividadRepository;
 
     @Mock
-    private ProcesoRepository procesoRepository;
+    private ProcesoService procesoService;
 
     @Mock
-    private RolProcesoRepository rolProcesoRepository;
+    private RolProcesoService rolProcesoService;
 
     @Mock
     private ModelMapper modelMapper;
@@ -37,17 +36,13 @@ class ActividadServiceTest {
     @InjectMocks
     private ActividadService actividadService;
 
-    // Listar actividades por proceso
     @Test
     void testListarPorProceso() {
         Actividad actividad = new Actividad();
         ActividadDTO dto = new ActividadDTO();
 
-        when(actividadRepository.findByProcesoId(1L))
-                .thenReturn(List.of(actividad));
-
-        when(modelMapper.map(actividad, ActividadDTO.class))
-                .thenReturn(dto);
+        when(actividadRepository.findByProcesoId(1L)).thenReturn(List.of(actividad));
+        when(modelMapper.map(actividad, ActividadDTO.class)).thenReturn(dto);
 
         List<ActividadDTO> result = actividadService.listarPorProceso(1L);
 
@@ -55,83 +50,60 @@ class ActividadServiceTest {
         verify(actividadRepository).findByProcesoId(1L);
     }
 
-    // Obtener actividad por ID
     @Test
     void testObtenerActividad_ok() {
         Actividad actividad = new Actividad();
         ActividadDTO dto = new ActividadDTO();
 
-        when(actividadRepository.findById(1L))
-                .thenReturn(Optional.of(actividad));
-
-        when(modelMapper.map(actividad, ActividadDTO.class))
-                .thenReturn(dto);
+        when(actividadRepository.findById(1L)).thenReturn(Optional.of(actividad));
+        when(modelMapper.map(actividad, ActividadDTO.class)).thenReturn(dto);
 
         ActividadDTO result = actividadService.obtenerActividad(1L);
 
         assertNotNull(result);
     }
 
-    // Error al obtener actividad por ID
     @Test
     void testObtenerActividad_notFound() {
-        when(actividadRepository.findById(1L))
-                .thenReturn(Optional.empty());
+        when(actividadRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> {
-            actividadService.obtenerActividad(1L);
-        });
+        assertThrows(RuntimeException.class, () -> actividadService.obtenerActividad(1L));
     }
 
-    // Crear actividad
     @Test
     void testCrearActividad() {
         ActividadDTO dto = new ActividadDTO();
         dto.setProcesoId(1L);
 
         Actividad actividad = new Actividad();
-        Proceso proceso = new Proceso();
+        ActividadDTO resultadoDTO = new ActividadDTO();
 
-        when(procesoRepository.findById(1L))
-                .thenReturn(Optional.of(proceso));
-
-        when(modelMapper.map(dto, Actividad.class))
-                .thenReturn(actividad);
-
-        when(actividadRepository.save(actividad))
-                .thenReturn(actividad);
-
-        when(modelMapper.map(actividad, ActividadDTO.class))
-                .thenReturn(dto);
+        when(procesoService.obtenerProceso(1L)).thenReturn(new ProcesoDTO());
+        when(modelMapper.map(any(), eq(co.reales.dw.entities.Proceso.class))).thenReturn(new co.reales.dw.entities.Proceso());
+        when(actividadRepository.save(any())).thenReturn(actividad);
+        when(modelMapper.map(actividad, ActividadDTO.class)).thenReturn(resultadoDTO);
 
         ActividadDTO result = actividadService.crearActividad(dto);
 
         assertNotNull(result);
-        verify(actividadRepository).save(actividad);
+        verify(actividadRepository).save(any());
     }
 
-    // Actualizar actividad
     @Test
     void testActualizarActividad() {
         Actividad actividad = new Actividad();
         ActividadDTO dto = new ActividadDTO();
         dto.setNombre("Nuevo");
 
-        when(actividadRepository.findById(1L))
-                .thenReturn(Optional.of(actividad));
-
-        when(actividadRepository.save(actividad))
-                .thenReturn(actividad);
-
-        when(modelMapper.map(actividad, ActividadDTO.class))
-                .thenReturn(dto);
+        when(actividadRepository.findById(1L)).thenReturn(Optional.of(actividad));
+        when(actividadRepository.save(actividad)).thenReturn(actividad);
+        when(modelMapper.map(actividad, ActividadDTO.class)).thenReturn(dto);
 
         ActividadDTO result = actividadService.actualizarActividad(1L, dto);
 
         assertEquals("Nuevo", result.getNombre());
     }
 
-    // Eliminar actividad
     @Test
     void testEliminarActividad() {
         actividadService.eliminarActividad(1L);

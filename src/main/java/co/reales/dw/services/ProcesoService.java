@@ -3,7 +3,6 @@ package co.reales.dw.services;
 import co.reales.dw.dtos.ProcesoDTO;
 import co.reales.dw.entities.Empresa;
 import co.reales.dw.entities.Proceso;
-import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.ProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,12 @@ public class ProcesoService {
     private static final String PROCESO_NO_ENCONTRADO = "Proceso no encontrado";
 
     private final ProcesoRepository procesoRepository;
-    private final EmpresaRepository empresaRepository;
+    private final EmpresaService empresaService;
     private final ModelMapper modelMapper;
 
-    public ProcesoService(ProcesoRepository procesoRepository, EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+    public ProcesoService(ProcesoRepository procesoRepository, EmpresaService empresaService, ModelMapper modelMapper) {
         this.procesoRepository = procesoRepository;
-        this.empresaRepository = empresaRepository;
+        this.empresaService = empresaService;
         this.modelMapper = modelMapper;
     }
 
@@ -38,8 +37,8 @@ public class ProcesoService {
     }
 
     public ProcesoDTO crearProceso(ProcesoDTO dto) {
-        Empresa empresa = empresaRepository.findById(dto.getEmpresaId())
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+        Empresa empresa = modelMapper.map(
+            empresaService.obtenerEmpresa(dto.getEmpresaId()), Empresa.class);
         Proceso proceso = modelMapper.map(dto, Proceso.class);
         proceso.setEmpresa(empresa);
         proceso.setActivo(true);

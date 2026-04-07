@@ -4,7 +4,6 @@ import co.reales.dw.dtos.RolProcesoDTO;
 import co.reales.dw.entities.Empresa;
 import co.reales.dw.entities.RolProceso;
 import co.reales.dw.exceptions.BadRequestException;
-import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.RolProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,12 @@ import java.util.List;
 public class RolProcesoService {
 
     private final RolProcesoRepository rolProcesoRepository;
-    private final EmpresaRepository empresaRepository;
+    private final EmpresaService empresaService;
     private final ModelMapper modelMapper;
 
-    public RolProcesoService(RolProcesoRepository rolProcesoRepository, EmpresaRepository empresaRepository, ModelMapper modelMapper) {
+    public RolProcesoService(RolProcesoRepository rolProcesoRepository, EmpresaService empresaService, ModelMapper modelMapper) {
         this.rolProcesoRepository = rolProcesoRepository;
-        this.empresaRepository = empresaRepository;
+        this.empresaService = empresaService;
         this.modelMapper = modelMapper;
     }
 
@@ -37,9 +36,11 @@ public class RolProcesoService {
     }
 
     public RolProcesoDTO crearRol(RolProcesoDTO dto) {
-        Empresa empresa = empresaRepository.findById(dto.getEmpresaId())
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
-        RolProceso rol = modelMapper.map(dto, RolProceso.class);
+        Empresa empresa = modelMapper.map(
+            empresaService.obtenerEmpresa(dto.getEmpresaId()), Empresa.class);
+        RolProceso rol = new RolProceso();
+        rol.setNombre(dto.getNombre());
+        rol.setDescripcion(dto.getDescripcion());
         rol.setEmpresa(empresa);
         return modelMapper.map(rolProcesoRepository.save(rol), RolProcesoDTO.class);
     }

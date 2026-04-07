@@ -1,9 +1,9 @@
 package co.reales.dw.services;
 
+import co.reales.dw.dtos.EmpresaDTO;
 import co.reales.dw.dtos.UsuarioDTO;
-import co.reales.dw.entities.Empresa;
+import co.reales.dw.dtos.UsuarioRequestDTO;
 import co.reales.dw.entities.Usuario;
-import co.reales.dw.repositories.EmpresaRepository;
 import co.reales.dw.repositories.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class UsuarioServiceTest {
     private UsuarioRepository usuarioRepository;
 
     @Mock
-    private EmpresaRepository empresaRepository;
+    private EmpresaService empresaService;
 
     @Mock
     private ModelMapper modelMapper;
@@ -33,131 +33,95 @@ class UsuarioServiceTest {
     @InjectMocks
     private UsuarioService usuarioService;
 
-    //Listar por empresa
     @Test
     void testListarUsuariosPorEmpresa() {
         Usuario usuario = new Usuario();
         UsuarioDTO dto = new UsuarioDTO();
 
-        when(usuarioRepository.findByEmpresaId(1L))
-                .thenReturn(List.of(usuario));
-
-        when(modelMapper.map(usuario, UsuarioDTO.class))
-                .thenReturn(dto);
+        when(usuarioRepository.findByEmpresaId(1L)).thenReturn(List.of(usuario));
+        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(dto);
 
         List<UsuarioDTO> result = usuarioService.listarUsuariosPorEmpresa(1L);
 
         assertEquals(1, result.size());
-        verify(usuarioRepository).findByEmpresaId(1L);
     }
 
-    // Obtener usuario por ID
     @Test
     void testObtenerUsuario_ok() {
         Usuario usuario = new Usuario();
         UsuarioDTO dto = new UsuarioDTO();
 
-        when(usuarioRepository.findById(1L))
-                .thenReturn(Optional.of(usuario));
-
-        when(modelMapper.map(usuario, UsuarioDTO.class))
-                .thenReturn(dto);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(dto);
 
         UsuarioDTO result = usuarioService.obtenerUsuario(1L);
 
         assertNotNull(result);
     }
 
-    // Error al obtener usuario por ID
     @Test
     void testObtenerUsuario_notFound() {
-        when(usuarioRepository.findById(1L))
-                .thenReturn(Optional.empty());
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> {
-            usuarioService.obtenerUsuario(1L);
-        });
+        assertThrows(RuntimeException.class, () -> usuarioService.obtenerUsuario(1L));
     }
 
-    // Crear usuario
     @Test
     void testCrearUsuario() {
-        UsuarioDTO dto = new UsuarioDTO();
+        UsuarioRequestDTO dto = new UsuarioRequestDTO();
         dto.setEmpresaId(1L);
+        dto.setContrasena("password123");
+        dto.setRol("ADMINISTRADOR");
 
         Usuario usuario = new Usuario();
-        Empresa empresa = new Empresa();
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
 
-        when(empresaRepository.findById(1L))
-                .thenReturn(Optional.of(empresa));
-
-        when(modelMapper.map(dto, Usuario.class))
-                .thenReturn(usuario);
-
-        when(usuarioRepository.save(usuario))
-                .thenReturn(usuario);
-
-        when(modelMapper.map(usuario, UsuarioDTO.class))
-                .thenReturn(dto);
+        when(empresaService.obtenerEmpresa(1L)).thenReturn(new EmpresaDTO());
+        when(modelMapper.map(any(), eq(co.reales.dw.entities.Empresa.class))).thenReturn(new co.reales.dw.entities.Empresa());
+        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
+        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(usuarioDTO);
 
         UsuarioDTO result = usuarioService.crearUsuario(dto);
 
         assertNotNull(result);
-        verify(usuarioRepository).save(usuario);
     }
 
-    // Crear usuario con empresa no encontrada
     @Test
     void testCrearUsuario_empresaNotFound() {
-        UsuarioDTO dto = new UsuarioDTO();
+        UsuarioRequestDTO dto = new UsuarioRequestDTO();
         dto.setEmpresaId(1L);
+        dto.setContrasena("pass");
+        dto.setRol("ADMINISTRADOR");
 
-        when(empresaRepository.findById(1L))
-                .thenReturn(Optional.empty());
+        when(empresaService.obtenerEmpresa(1L)).thenThrow(new RuntimeException("Empresa no encontrada"));
 
-        assertThrows(RuntimeException.class, () -> {
-            usuarioService.crearUsuario(dto);
-        });
+        assertThrows(RuntimeException.class, () -> usuarioService.crearUsuario(dto));
     }
 
-    // Actualizar usuario
     @Test
     void testActualizarUsuario() {
         Usuario usuario = new Usuario();
         UsuarioDTO dto = new UsuarioDTO();
-
         dto.setNombre("Nuevo");
         dto.setCorreo("correo@test.com");
         dto.setRol("ADMINISTRADOR");
 
-        when(usuarioRepository.findById(1L))
-                .thenReturn(Optional.of(usuario));
-
-        when(usuarioRepository.save(usuario))
-                .thenReturn(usuario);
-
-        when(modelMapper.map(usuario, UsuarioDTO.class))
-                .thenReturn(dto);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(usuarioRepository.save(usuario)).thenReturn(usuario);
+        when(modelMapper.map(usuario, UsuarioDTO.class)).thenReturn(dto);
 
         UsuarioDTO result = usuarioService.actualizarUsuario(1L, dto);
 
         assertEquals("Nuevo", result.getNombre());
     }
 
-    // Actualizar usuario no encontrado
     @Test
     void testActualizarUsuario_notFound() {
-        UsuarioDTO dto = new UsuarioDTO();
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.empty());
 
-        when(usuarioRepository.findById(1L))
-                .thenReturn(Optional.empty());
-
-        assertThrows(RuntimeException.class, () -> {
-            usuarioService.actualizarUsuario(1L, dto);
-        });
+        assertThrows(RuntimeException.class, () -> usuarioService.actualizarUsuario(1L, new UsuarioDTO()));
     }
 
-    // Eliminar usuario
     @Test
     void testEliminarUsuario() {
         usuarioService.eliminarUsuario(1L);

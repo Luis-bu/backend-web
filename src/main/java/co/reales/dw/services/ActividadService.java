@@ -5,8 +5,6 @@ import co.reales.dw.entities.Actividad;
 import co.reales.dw.entities.Proceso;
 import co.reales.dw.entities.RolProceso;
 import co.reales.dw.repositories.ActividadRepository;
-import co.reales.dw.repositories.ProcesoRepository;
-import co.reales.dw.repositories.RolProcesoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -15,14 +13,14 @@ import java.util.List;
 public class ActividadService {
 
     private final ActividadRepository actividadRepository;
-    private final ProcesoRepository procesoRepository;
-    private final RolProcesoRepository rolProcesoRepository;
+    private final ProcesoService procesoService;
+    private final RolProcesoService rolProcesoService;
     private final ModelMapper modelMapper;
 
-    public ActividadService(ActividadRepository actividadRepository, ProcesoRepository procesoRepository, RolProcesoRepository rolProcesoRepository, ModelMapper modelMapper) {
+    public ActividadService(ActividadRepository actividadRepository, ProcesoService procesoService, RolProcesoService rolProcesoService, ModelMapper modelMapper) {
         this.actividadRepository = actividadRepository;
-        this.procesoRepository = procesoRepository;
-        this.rolProcesoRepository = rolProcesoRepository;
+        this.procesoService = procesoService;
+        this.rolProcesoService = rolProcesoService;
         this.modelMapper = modelMapper;
     }
 
@@ -40,13 +38,16 @@ public class ActividadService {
     }
 
     public ActividadDTO crearActividad(ActividadDTO dto) {
-        Proceso proceso = procesoRepository.findById(dto.getProcesoId())
-                .orElseThrow(() -> new RuntimeException("Proceso no encontrado"));
-        Actividad actividad = modelMapper.map(dto, Actividad.class);
+        Proceso proceso = modelMapper.map(
+            procesoService.obtenerProceso(dto.getProcesoId()), Proceso.class);
+        Actividad actividad = new Actividad();
+        actividad.setNombre(dto.getNombre());
+        actividad.setTipo(dto.getTipo());
+        actividad.setDescripcion(dto.getDescripcion());
         actividad.setProceso(proceso);
         if (dto.getRolProcesoId() != null) {
-            RolProceso rol = rolProcesoRepository.findById(dto.getRolProcesoId())
-                    .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+            RolProceso rol = modelMapper.map(
+                rolProcesoService.obtenerRol(dto.getRolProcesoId()), RolProceso.class);
             actividad.setRolProceso(rol);
         }
         return modelMapper.map(actividadRepository.save(actividad), ActividadDTO.class);
