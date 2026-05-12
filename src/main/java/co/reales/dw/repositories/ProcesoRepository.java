@@ -7,7 +7,7 @@ import java.util.List;
 
 @Repository
 public interface ProcesoRepository extends JpaRepository<Proceso, Long> {
-    List<Proceso> findByEmpresaId(Long empresaId);
+    List<Proceso> findByEmpresaIdAndActivoTrue(Long empresaId);
     List<Proceso> findByEmpresaIdAndEstado(Long empresaId, Proceso.EstadoProceso estado);
     List<Proceso> findByEmpresaIdAndCategoria(Long empresaId, String categoria);
 }

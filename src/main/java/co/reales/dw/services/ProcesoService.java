@@ -24,7 +24,7 @@ public class ProcesoService {
     }
 
     public List<ProcesoDTO> listarProcesosPorEmpresa(Long empresaId) {
-        return procesoRepository.findByEmpresaId(empresaId)
+        return procesoRepository.findByEmpresaIdAndActivoTrue(empresaId)
                 .stream()
                 .map(p -> modelMapper.map(p, ProcesoDTO.class))
                 .toList();
