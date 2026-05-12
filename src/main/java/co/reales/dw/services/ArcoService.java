@@ -65,6 +65,18 @@ public class ArcoService {
         Arco arco = arcoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Arco no encontrado"));
         arco.setEtiqueta(dto.getEtiqueta());
+        arco.setActividadOrigen(dto.getActividadOrigenId() != null
+            ? modelMapper.map(actividadService.obtenerActividad(dto.getActividadOrigenId()), Actividad.class)
+            : null);
+        arco.setActividadDestino(dto.getActividadDestinoId() != null
+            ? modelMapper.map(actividadService.obtenerActividad(dto.getActividadDestinoId()), Actividad.class)
+            : null);
+        arco.setGatewayOrigen(dto.getGatewayOrigenId() != null
+            ? modelMapper.map(gatewayService.obtenerGateway(dto.getGatewayOrigenId()), Gateway.class)
+            : null);
+        arco.setGatewayDestino(dto.getGatewayDestinoId() != null
+            ? modelMapper.map(gatewayService.obtenerGateway(dto.getGatewayDestinoId()), Gateway.class)
+            : null);
         return modelMapper.map(arcoRepository.save(arco), ArcoDTO.class);
     }
 
