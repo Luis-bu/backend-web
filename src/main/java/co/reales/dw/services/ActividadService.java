@@ -59,6 +59,13 @@ public class ActividadService {
         actividad.setNombre(dto.getNombre());
         actividad.setTipo(dto.getTipo());
         actividad.setDescripcion(dto.getDescripcion());
+        if (dto.getRolProcesoId() != null) {
+            RolProceso rol = modelMapper.map(
+                rolProcesoService.obtenerRol(dto.getRolProcesoId()), RolProceso.class);
+            actividad.setRolProceso(rol);
+        } else {
+            actividad.setRolProceso(null);
+        }
         return modelMapper.map(actividadRepository.save(actividad), ActividadDTO.class);
     }
 

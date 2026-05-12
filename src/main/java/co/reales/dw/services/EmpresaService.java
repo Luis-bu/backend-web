@@ -5,6 +5,7 @@ import co.reales.dw.entities.Empresa;
 import co.reales.dw.repositories.EmpresaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -45,7 +46,10 @@ public class EmpresaService {
         return modelMapper.map(empresaRepository.save(empresa), EmpresaDTO.class);
     }
 
+    @Transactional
     public void eliminarEmpresa(Long id) {
-        empresaRepository.deleteById(id);
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+        empresaRepository.delete(empresa);
     }
 }

@@ -32,10 +32,13 @@ public class Proceso {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
-    @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Arco> arcos;
+
+    @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Actividad> actividades;
 
-    @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Gateway> gateways;
 
     public enum EstadoProceso {
