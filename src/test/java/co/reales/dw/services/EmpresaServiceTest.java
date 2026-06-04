@@ -123,9 +123,13 @@ class EmpresaServiceTest {
     @Test
     void eliminarEmpresa_ok() {
         Long id = 1L;
+        Empresa empresa = new Empresa();
+        empresa.setId(id);
+
+        when(empresaRepository.findById(id)).thenReturn(Optional.of(empresa));
 
         empresaService.eliminarEmpresa(id);
 
-        verify(empresaRepository).deleteById(id);
+        verify(empresaRepository).delete(empresa);
     }
 }

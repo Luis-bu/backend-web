@@ -10,4 +10,6 @@ public interface ProcesoRepository extends JpaRepository<Proceso, Long> {
     List<Proceso> findByEmpresaIdAndActivoTrue(Long empresaId);
     List<Proceso> findByEmpresaIdAndEstado(Long empresaId, Proceso.EstadoProceso estado);
     List<Proceso> findByEmpresaIdAndCategoria(Long empresaId, String categoria);
+    long countByEstado(Proceso.EstadoProceso estado);
+    List<Proceso> findTop5ByOrderByIdDesc();
 }

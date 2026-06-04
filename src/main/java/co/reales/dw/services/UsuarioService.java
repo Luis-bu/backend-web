@@ -5,6 +5,7 @@ import co.reales.dw.dtos.UsuarioRequestDTO;
 import co.reales.dw.entities.Empresa;
 import co.reales.dw.entities.Usuario;
 import co.reales.dw.repositories.UsuarioRepository;
+import co.reales.dw.security.SecurityUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UsuarioService {
     }
 
     public List<UsuarioDTO> listarUsuariosPorEmpresa(Long empresaId) {
+        SecurityUtils.validarAccesoEmpresa(empresaId);
         return usuarioRepository.findByEmpresaId(empresaId)
                 .stream()
                 .map(u -> modelMapper.map(u, UsuarioDTO.class))
@@ -34,10 +36,16 @@ public class UsuarioService {
     public UsuarioDTO obtenerUsuario(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        SecurityUtils.validarAccesoEmpresa(usuario.getEmpresa().getId());
         return modelMapper.map(usuario, UsuarioDTO.class);
     }
 
     public UsuarioDTO crearUsuario(UsuarioRequestDTO dto) {
+        return crearUsuario(dto, true);
+    }
+
+    public UsuarioDTO crearUsuario(UsuarioRequestDTO dto, boolean validarEmpresa) {
+        if (validarEmpresa) SecurityUtils.validarAccesoEmpresa(dto.getEmpresaId());
         Empresa empresa = modelMapper.map(
             empresaService.obtenerEmpresa(dto.getEmpresaId()), Empresa.class);
         Usuario usuario = new Usuario();

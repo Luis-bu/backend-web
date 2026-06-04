@@ -11,6 +11,8 @@ import java.util.List;
 @Service
 public class EmpresaService {
 
+    private static final String EMPRESA_NO_ENCONTRADA = "Empresa no encontrada";
+
     private final EmpresaRepository empresaRepository;
     private final ModelMapper modelMapper;
 
@@ -28,7 +30,7 @@ public class EmpresaService {
 
     public EmpresaDTO obtenerEmpresa(Long id) {
         Empresa empresa = empresaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                .orElseThrow(() -> new RuntimeException(EMPRESA_NO_ENCONTRADA));
         return modelMapper.map(empresa, EmpresaDTO.class);
     }
 
@@ -39,7 +41,7 @@ public class EmpresaService {
 
     public EmpresaDTO actualizarEmpresa(Long id, EmpresaDTO dto) {
         Empresa empresa = empresaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                .orElseThrow(() -> new RuntimeException(EMPRESA_NO_ENCONTRADA));
         empresa.setNombre(dto.getNombre());
         empresa.setNit(dto.getNit());
         empresa.setCorreoContacto(dto.getCorreoContacto());
@@ -49,7 +51,7 @@ public class EmpresaService {
     @Transactional
     public void eliminarEmpresa(Long id) {
         Empresa empresa = empresaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+                .orElseThrow(() -> new RuntimeException(EMPRESA_NO_ENCONTRADA));
         empresaRepository.delete(empresa);
     }
 }
